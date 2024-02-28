@@ -89,7 +89,7 @@ public class VerticalClip extends Module {
         if (shape.isEmpty()) return;
         Box box = shape.getBoundingBox();
 
-        Double difference = findDifference(bp, side == Direction.UP);
+        Double difference = findDifference(bp.getY(), side == Direction.UP);
 
         if(difference != null && Math.abs(difference) <= maxDistance.get())
             event.renderer.sideHorizontal(bp.getX() + box.minX, bp.getY() + (side == Direction.DOWN ? box.minY : box.maxY), bp.getZ() + box.minZ, bp.getX() + box.maxX, bp.getZ() + box.maxZ, sideColor.get(), lineColor.get(), shapeMode.get());
@@ -104,41 +104,24 @@ public class VerticalClip extends Module {
         Direction side = event.result.getSide();
         if (side != Direction.UP && side != Direction.DOWN) return;
 
-        Double difference = findDifference(bp, side == Direction.UP);
+        Double difference = findDifference(bp.getY(), side == Direction.UP);
         if(difference == null) return;
         if(Math.abs(difference) > maxDistance.get()) return;
 
         MovementUtils.saferVClip(difference);
     }
 
-    private Double findDifference(BlockPos origin, boolean up) {
+    private Double findDifference(int originY, boolean up) {
         if(up) {
-            int air = 0;
-
-            for (int i = origin.getY(); i >= mc.world.getBottomY(); i--) {
-                BlockPos pos = new BlockPos(origin.getX(), i, origin.getZ());
-                BlockState st = mc.world.getBlockState(pos);
-
-                if(st.isAir()) air++;
-                else air = 0;
-
-                if(air == 2) {
-                    return pos.getY() - mc.player.getY();
-                }
+            //                          | Can't use maxDistance here, because then it could TP into the void.
+            for (int y = originY; y >= mc.world.getBottomY(); y--) {
+                double diffHere = y - mc.player.getY();
+                if(MovementUtils.isPlayerNotCollidingWithBlocksVertically(mc.player.getY() + diffHere)) return diffHere;
             }
         } else {
-            int air = 0;
-
-            for(int i = origin.getY(); i <= mc.world.getTopY(); i++) {
-                BlockPos pos = new BlockPos(origin.getX(), i, origin.getZ());
-                BlockState st = mc.world.getBlockState(pos);
-
-                if(st.isAir()) air++;
-                else air = 0;
-
-                if(air == 2) {
-                    return (pos.getY() - 1) - mc.player.getY();
-                }
+            for(int y = originY; y <= originY + maxDistance.get(); y++) {
+                double diffHere =  y - mc.player.getY();
+                if(MovementUtils.isPlayerNotCollidingWithBlocksVertically(mc.player.getY() + diffHere)) return diffHere;
             }
         }
 

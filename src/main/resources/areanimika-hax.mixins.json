@@ -3,7 +3,9 @@
   "package": "com.areanimika.areanimikahax.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "CameraRenderingMixin"
+    "CameraRenderingMixin",
+    "LightningEntityMixin",
+    "LightningRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
