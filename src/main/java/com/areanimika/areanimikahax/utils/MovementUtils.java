@@ -3,7 +3,11 @@ package com.areanimika.areanimikahax.utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.c2s.play.VehicleMoveC2SPacket;
+import net.minecraft.util.function.BooleanBiFunction;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
@@ -54,5 +58,21 @@ public class MovementUtils {
         }
 
         mc.player.setPosition(mc.player.getX() + forward.x * blocks, mc.player.getY(), mc.player.getZ() + forward.z * blocks);
+    }
+
+    public static boolean isPlayerNotCollidingWithBlocksVertically(double newY) {
+        Box fromBB = mc.player.getBoundingBox();
+        Box toBB = mc.player.getBoundingBox().offset(0, newY - mc.player.getY(), 0);
+
+        Iterable<VoxelShape> iterable = mc.world.getCollisions(mc.player, toBB.contract(1.0E-5F));
+        VoxelShape voxelShape = VoxelShapes.cuboid(fromBB.contract(1.0E-5F));
+
+        for(VoxelShape voxelShape2 : iterable) {
+            if (!VoxelShapes.matchesAnywhere(voxelShape2, voxelShape, BooleanBiFunction.AND)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

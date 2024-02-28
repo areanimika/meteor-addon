@@ -3,6 +3,7 @@ package com.areanimika.areanimikahax.modules;
 import com.areanimika.areanimikahax.Addon;
 import com.areanimika.areanimikahax.event.CameraOffsetEvent;
 import com.areanimika.areanimikahax.event.LivingDeathEvent;
+import com.areanimika.areanimikahax.mixinterface.ILightningEntity;
 import com.areanimika.areanimikahax.utils.MathUtils;
 import meteordevelopment.meteorclient.events.render.Render2DEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
@@ -113,15 +114,25 @@ public class KillEffects extends Module {
             .build()
     );
 
-    /* Other Basic Effects */
-    private final SettingGroup sgEffects = settings.createGroup("Basic Effects");
+    /* Lightning Effect */
+    private final SettingGroup sgLightning = settings.createGroup("Lightning");
 
-    private final Setting<Boolean> effectLightning = sgEffects.add(new BoolSetting.Builder()
-            .name("effect-lightning")
+    private final Setting<Boolean> lightningEnabled = sgLightning.add(new BoolSetting.Builder()
+            .name("lightning-enabled")
             .description("Strikes a lightning.")
             .defaultValue(true)
             .build()
     );
+
+    private final Setting<SettingColor> lightningColor = sgLightning.add(new ColorSetting.Builder()
+            .name("lightning-enabled")
+            .description("Color of the lightning.")
+            .defaultValue(new SettingColor(170, 0, 0, 255 * 0.3f))
+            .visible(lightningEnabled::get)
+            .build()
+    );
+    /* Other Basic Effects */
+    private final SettingGroup sgEffects = settings.createGroup("Basic Effects");
 
     private final Setting<Boolean> effectBlood = sgEffects.add(new BoolSetting.Builder()
             .name("effect-blood")
@@ -153,9 +164,10 @@ public class KillEffects extends Module {
 
         if(shakeEnabled.get()) shakeLeft = shakeDuration.get();
 
-        if(effectLightning.get()) {
+        if(lightningEnabled.get()) {
             LightningEntity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, mc.world);
             lightning.setPosition(entity.getPos());
+            ((ILightningEntity) lightning).ama$setColor(lightningColor.get());
 
             mc.world.addEntity(lightning);
         }
