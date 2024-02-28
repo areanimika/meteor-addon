@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "areanimika-hax",
+  "version": "${version}",
+  "name": "AreanimikaHax",
+  "description": "Meteor Addon",
+  "accessWidener" : "areanimika-hax.accesswidener",
+  "authors": [
+    "areanimika"
+  ],
+  "environment": "client",
+  "entrypoints": {
+    "meteor": [
+      "com.areanimika.areanimikahax.Addon"
+    ]
+  },
+  "mixins": [
+    "areanimika-hax.mixins.json"
+  ],
+  "custom": {
+    "meteor-client:color": "225,25,25"
+  },
+  "depends": {
+    "java": ">=17",
+    "minecraft": ">=${mc_version}",
+    "meteor-client": "*"
+  }
+}
