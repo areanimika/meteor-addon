@@ -89,7 +89,7 @@ public class VerticalClip extends Module {
         if (shape.isEmpty()) return;
         Box box = shape.getBoundingBox();
 
-        Double difference = findDifference(bp.getY(), side == Direction.UP);
+        Double difference = MovementUtils.findVClipTeleportationDifference(mc.player.getY(), side == Direction.UP);
 
         if(difference != null && Math.abs(difference) <= maxDistance.get())
             event.renderer.sideHorizontal(bp.getX() + box.minX, bp.getY() + (side == Direction.DOWN ? box.minY : box.maxY), bp.getZ() + box.minZ, bp.getX() + box.maxX, bp.getZ() + box.maxZ, sideColor.get(), lineColor.get(), shapeMode.get());
@@ -100,31 +100,14 @@ public class VerticalClip extends Module {
         if(onlyOnKeyEnabled.get() && !(onlyOnKeyKeybind.get().isPressed() && onlyOnKeyKeybind.get().isValid())) return;
         if(event.result.isInsideBlock()) return;
 
-        BlockPos bp = event.result.getBlockPos();
         Direction side = event.result.getSide();
         if (side != Direction.UP && side != Direction.DOWN) return;
 
-        Double difference = findDifference(bp.getY(), side == Direction.UP);
+        Double difference = MovementUtils.findVClipTeleportationDifference(mc.player.getY(), side == Direction.UP);
         if(difference == null) return;
         if(Math.abs(difference) > maxDistance.get()) return;
 
         MovementUtils.saferVClip(difference);
-    }
-
-    private Double findDifference(int originY, boolean up) {
-        if(up) {
-            //                          | Can't use maxDistance here, because then it could TP into the void.
-            for (int y = originY; y >= mc.world.getBottomY(); y--) {
-                double diffHere = y - mc.player.getY();
-                if(MovementUtils.isPlayerNotCollidingWithBlocksVertically(mc.player.getY() + diffHere)) return diffHere;
-            }
-        } else {
-            for(int y = originY; y <= originY + maxDistance.get(); y++) {
-                double diffHere =  y - mc.player.getY();
-                if(MovementUtils.isPlayerNotCollidingWithBlocksVertically(mc.player.getY() + diffHere)) return diffHere;
-            }
-        }
-
-        return null;
+        event.cancel();
     }
 }

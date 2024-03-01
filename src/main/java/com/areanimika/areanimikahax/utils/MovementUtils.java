@@ -75,4 +75,36 @@ public class MovementUtils {
 
         return true;
     }
+
+    public static Double findVClipTeleportationDifference(double originY, boolean goDown) {
+        boolean hadAnyObstaclesYet = false;
+
+        if(goDown) {
+            for (double y = originY; y >= mc.world.getBottomY(); y--) {
+                double diffHere = y - mc.player.getY();
+
+                if(isPlayerNotCollidingWithBlocksVertically(mc.player.getY() + diffHere)) {
+                    if (hadAnyObstaclesYet) {
+                        return diffHere;
+                    }
+                } else {
+                    hadAnyObstaclesYet = true;
+                }
+            }
+        } else {
+            for(double y = originY; y <= mc.world.getTopY() + 2; y++) {
+                double diffHere =  y - mc.player.getY();
+
+                if(isPlayerNotCollidingWithBlocksVertically(mc.player.getY() + diffHere)) {
+                    if (hadAnyObstaclesYet) {
+                        return diffHere;
+                    }
+                } else {
+                    hadAnyObstaclesYet = true;
+                }
+            }
+        }
+
+        return null;
+    }
 }

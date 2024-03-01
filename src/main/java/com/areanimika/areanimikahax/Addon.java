@@ -1,7 +1,9 @@
 package com.areanimika.areanimikahax;
 
+import com.areanimika.areanimikahax.commands.BottomCommand;
 import com.areanimika.areanimikahax.commands.IncHClipCommand;
 import com.areanimika.areanimikahax.commands.SafeVClipCommand;
+import com.areanimika.areanimikahax.commands.TopCommand;
 import com.areanimika.areanimikahax.modules.AlwaysNoFallPacket;
 import com.areanimika.areanimikahax.modules.BlockLogger;
 import com.areanimika.areanimikahax.modules.KillEffects;
@@ -26,6 +28,8 @@ public class Addon extends MeteorAddon {
 
         Commands.add(new SafeVClipCommand());
         Commands.add(new IncHClipCommand());
+        Commands.add(new TopCommand());
+        Commands.add(new BottomCommand());
     }
 
     @Override public void onRegisterCategories() {
