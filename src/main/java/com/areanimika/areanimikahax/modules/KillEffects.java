@@ -10,6 +10,7 @@ import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.ColorSetting;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
 import meteordevelopment.meteorclient.settings.EntityTypeListSetting;
+import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
@@ -21,6 +22,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.Set;
@@ -125,12 +127,37 @@ public class KillEffects extends Module {
     );
 
     private final Setting<SettingColor> lightningColor = sgLightning.add(new ColorSetting.Builder()
-            .name("lightning-enabled")
+            .name("lightning-color")
             .description("Color of the lightning.")
             .defaultValue(new SettingColor(170, 0, 0, 255 * 0.3f))
             .visible(lightningEnabled::get)
             .build()
     );
+
+    private final Setting<Double> lightningImpactVolume = sgLightning.add(new DoubleSetting.Builder()
+            .name("lightning-volume-impact")
+            .defaultValue(2)
+            .visible(lightningEnabled::get)
+            .noSlider()
+            .build()
+    );
+
+    private final Setting<Double> lightningThunderVolume = sgLightning.add(new DoubleSetting.Builder()
+            .name("lightning-volume-thunder")
+            .defaultValue(10000)
+            .visible(lightningEnabled::get)
+            .noSlider()
+            .build()
+    );
+
+    private final Setting<SoundCategory> lightningSoundCategory = sgLightning.add(new EnumSetting.Builder<SoundCategory>()
+            .name("lightning-sound-category")
+            .description("Changes what sound settings slider affects the lightning sounds.")
+            .defaultValue(SoundCategory.MASTER)
+            .visible(lightningEnabled::get)
+            .build()
+    );
+
     /* Other Basic Effects */
     private final SettingGroup sgEffects = settings.createGroup("Basic Effects");
 
@@ -167,7 +194,12 @@ public class KillEffects extends Module {
         if(lightningEnabled.get()) {
             LightningEntity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, mc.world);
             lightning.setPosition(entity.getPos());
-            ((ILightningEntity) lightning).ama$setColor(lightningColor.get());
+
+            ILightningEntity iLightning = (ILightningEntity) lightning;
+            iLightning.ama$setColor(lightningColor.get());
+            iLightning.ama$setImpactVolume(lightningImpactVolume.get());
+            iLightning.ama$setThunderVolume(lightningThunderVolume.get());
+            iLightning.ama$setSoundCategory(lightningSoundCategory.get());
 
             mc.world.addEntity(lightning);
         }
