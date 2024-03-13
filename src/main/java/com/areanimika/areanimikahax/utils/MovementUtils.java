@@ -107,4 +107,12 @@ public class MovementUtils {
 
         return null;
     }
+
+    public static Double findHighestPossibleTeleportationDifference(double originY, double maxDiff) {
+        for(double y = originY + maxDiff; y > originY; y--) {
+            if(isPlayerNotCollidingWithBlocksVertically(y)) return y - originY;
+        }
+
+        return null;
+    }
 }

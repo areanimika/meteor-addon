@@ -7,6 +7,7 @@ import com.areanimika.areanimikahax.commands.TopCommand;
 import com.areanimika.areanimikahax.modules.AlwaysNoFallPacket;
 import com.areanimika.areanimikahax.modules.BlockLogger;
 import com.areanimika.areanimikahax.modules.KillEffects;
+import com.areanimika.areanimikahax.modules.PanicVClip;
 import com.areanimika.areanimikahax.modules.VerticalClip;
 import com.areanimika.areanimikahax.utils.EntityDeathDetector;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -25,6 +26,7 @@ public class Addon extends MeteorAddon {
         Modules.get().add(new AlwaysNoFallPacket());
         Modules.get().add(new BlockLogger());
         Modules.get().add(new KillEffects());
+        Modules.get().add(new PanicVClip());
 
         Commands.add(new SafeVClipCommand());
         Commands.add(new IncHClipCommand());
